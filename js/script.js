@@ -24,20 +24,17 @@ function loadData() {
     var nytURI = 'http://api.nytimes.com/svc/search/v2/articlesearch.json?q=' + address + '&sort=newest&api-key=8050a6b5db4ee4114ff99440f71775be:6:74541255';
 
     $.getJSON( nytURI , function( data ) {
-
-        console.log()
-      
+    		$nytHeaderElem.text('NY Times articles about: '  + city);
         var items = [];
         $.each( data.response.docs, function( key, val ) {
             var headline = val.headline.main;
             var articleURL = val.web_url;
-            items.push( '<li><a href="' + articleURL + '">' + headline + '</a></li>' );
+            var articleSnippet = val.snippet;
+            items.push( '<li><a href="' + articleURL + '">' + headline + '</a><p>' + articleSnippet + '</p></li>' );
         });
 
-        $( "<ul/>", {
-            "class": "article",
-            html: items.join( "" )
-        }).appendTo( $('#nytimes-articles') );
+        $nytElem.append(items.join(""));
+
     });
 
 
