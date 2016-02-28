@@ -40,24 +40,41 @@ function loadData() {
     	$nytHeaderElem.text('NY Times articles could not be loaded');
     });
 
-    // get wikipedia articles relating to city
-   	var wikipediaURI = 'https://en.wikipedia.org/w/api.php?action=query&prop=extracts&titles='+ city + '&exintro=1&redirects=1&format=json&callback=wikiCallBack';
-   	//var wikipediaURI = 'https://en.wikipedia.org/w/api.php?action=query&prop=revisions&titles='+ city + '&rvprop=content&format=json';
+   //  // get wikipedia articles relating to city
+   // 	var wikipediaURI = 'https://en.wikipedia.org/w/api.php?action=query&prop=extracts&titles='+ city + '&exintro=1&redirects=1&format=json&callback=wikiCallBack';
+   // 	//var wikipediaURI = 'https://en.wikipedia.org/w/api.php?action=query&prop=revisions&titles='+ city + '&rvprop=content&format=json';
 
+   //  $.ajax({
+   //  	url: wikipediaURI,
+   //  	dataType: "jsonp",
+   //  	jsonp: "callback",
+   //  }).done(function(response) {
+
+   //  	var pages = response.query.pages;
+   //  	var noOfPages = pages.length;
+   //  	for (var prop in pages) {
+   //  		$wikiElem.append('<li><a href="https://en.wikipedia.org/wiki/' + pages[prop].title + '">' + pages[prop].title + '</a>' + pages[prop].extract );
+			// }
+   //  }).fail(function() {
+			// 	$wikiHeaderElem.text('Wikipedia articles could not be loaded');	
+			// });
+
+
+    // cameron's solution
+    var wikiURL = 'https://en.wikipedia.org/w/api.php?action=opensearch&search=' + city + '&format=json&callback=wikiCallBack';
     $.ajax({
-    	url: wikipediaURI,
+    	url: wikiURL,
     	dataType: "jsonp",
-    	jsonp: "callback",
-    }).done(function(response) {
-
-    	var pages = response.query.pages;
-    	var noOfPages = pages.length;
-    	for (var prop in pages) {
-    		$wikiElem.append('<li><a href="https://en.wikipedia.org/wiki/' + pages[prop].title + '">' + pages[prop].title + '</a>' + pages[prop].extract );
-			}
-    }).fail(function() {
-				$wikiHeaderElem.text('Wikipedia articles could not be loaded');	
-			});
+  //  	jsonp: "callback",
+  		success: function(response) {
+  			var articleList = response[1];
+  			for (var i = 0; i < articleList.length; i++) {
+  				articleStr = articleList[i];
+  				var url = 'http://en.wikipedia.org/wiki/' + articleStr;
+  				$wikiElem.append('<li><a href="' + url +  '">' + articleStr + '</a></li>');
+  			}
+  		}
+  	});
 
     return false;
 };
